@@ -215,3 +215,125 @@ update_map_view = function () {
         return "#DFDFDF";
     });
 }
+
+
+/*
+ * Main Entry Point
+ */
+
+init_all_view();
+
+/*
+   page initialization
+   lock signin button until loaded the endpoints modules.
+   switch to login page (this is a single page app.)
+   */
+$(function() {
+    lock_signin_btn();
+    switch_page('page-login');
+});
+
+/*
+   CLIENT_ID: client id for web application, you should register one 
+   in your cloud console.
+   SCOPES: reference to OAuth2 scopes, just google that on Google Developer site.
+   */
+// ORIGINAL LOCAL TESTING
+var CLIENT_ID = '948499484220-9bd022tr3fhj3qrv9m7b62ir66itjemu.apps.googleusercontent.com'
+var SCOPES = [
+'https://www.googleapis.com/auth/userinfo.email',
+'https://www.googleapis.com/auth/bigquery',
+'https://www.googleapis.com/auth/plus.login',
+'https://www.googleapis.com/auth/plus.me',
+'https://www.googleapis.com/auth/devstorage.read_only'
+]
+
+// Load profile information, callback will be called with one argument, which is the profile data with JSON format.
+load_gplus_profile = function(callback) {
+    var plus_options = {
+        userId: 'me',
+        field: 'image'
+    };
+
+    gapi.client.plus.people
+        .get(plus_options)
+        .execute(function(profile) {
+            callback(profile);
+        });
+}
+// Entry point for endpoints, everything starts from here.
+
+function load_gapis() {
+    var apiToLoad = 3; // this has to be the same number of libs which called gapi.cliend.load function.
+
+    // here ensures all libs have been loaded well.
+    var loadCallback = function() {
+        if (--apiToLoad === 0) {
+            console.log('loaded');
+            unlock_signin_btn();
+
+            signin_with_gapi(true, function() {
+                load_gplus_profile(function(profile) {
+                    if (profile.image) {
+                        var profile_pic_url = profile.image.url;
+                        profile_pic_url = profile_pic_url.replace(/sz=50/, "sz=250");
+                        $("#profile_pic_img").attr('src', profile_pic_url);
+                    }
+                });
+            });
+            $(".loading_page").hide();
+            BigQueryAPI = gapi.client.bigquery;
+        }
+    };
+    gapi.client.load('oauth2', 'v2', loadCallback);
+    gapi.client.load('plus', 'v1', loadCallback);
+    gapi.client.load('bigquery', 'v2', loadCallback);
+}
+
+// login method, don't touch this, BLACK MAGIC.
+var signin_with_gapi = function(immediate, callback) {
+    gapi.auth.authorize({
+        client_id: CLIENT_ID,
+    scope: SCOPES,
+    immediate: immediate
+    },
+    callback);
+}
+
+var login_action = function() {
+
+    load_gplus_profile(function(profile) {
+        var profile_display_name = profile.displayName;
+        $("#g_username").html(profile_display_name);
+
+        $("#signin_status").removeClass('hide');
+        $("#menu-bar").removeClass('hide');
+        $("#signout_status").removeClass('hide');
+
+        // initialize all views
+        BigData_Views.map(function(init_f) {
+            init_f()
+        });
+        switch_page('page-data');
+    });
+};
+
+// this is the function to let you login, if you need login just call this one.
+
+function sign_in() {
+    signin_with_gapi(false, function() {
+        login_action();
+    });
+}
+// the same of above one, but this is for sign out.
+
+function sign_out() {
+    document.location.reload();
+    gapi.auth.setToken(null);
+    gapi.auth.signOut();
+    $("#signin_status").addClass('hide');
+    $("#btn-signout").addClass('hide');
+    $("#signout_status").addClass('hide');
+
+    switch_page('page-login');
+}
