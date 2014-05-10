@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BigQuery Taiwan</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta charset="UTF-8">
+
+    <!-- bootstrap style -->
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/todc-bootstrap.css">
+
+    <!-- optional styles -->
+    <link rel="stylesheet" href="/static/css/gplus_loading.css">
+    <link rel="stylesheet" href="/static/css/signin.css">
+    <link rel="stylesheet" href="/static/js/codemirror/codemirror.css">
+    <link rel="stylesheet" href="/static/js/codemirror/theme/base16-light.css">
+    <link rel="stylesheet" href="/static/css/select2.css">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+
+<body>
+    <header>
+        <div class="navbar navbar-masthead navbar-default navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <!--
+                <img id="website-logo" src="./static/img/64icons/BigDataLab-logo-transparent-64.png" alt="BigData Lab">
+                -->
+                <a class="navbar-brand" href="/#">
+                    <span class="google-font">BigQuery</span>
+                    <span class="google-font-2">Taiwan</span>
+                </a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".bdl-masthead-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <div class="collapse navbar-collapse bdl-masthead-collapse-1">
+            <!--
+                <ul id="menu-bar" class="hide nav navbar-nav navbar-left">
+                    <li class="active">
+                        <a id="btn-page-data" class="btn-page" page-target="page-data" href="#">Data</a>
+                    </li>
+                    <li class="">
+                        <a id="btn-page-mapreduce" class="btn-page" page-target="page-mapreduce" href="#">MapReduce</a>
+                    </li>
+                    <li class="">
+                        <a id="btn-page-predict" class="btn-page" page-target="page-predict" href="#">Prediction</a>
+                    </li>
+                    <li class="">
+                        <a id="btn-page-visual" class="btn-page" page-target="page-visual" href="#">Visualization</a>
+                    </li>
+                </ul>
+                -->
+                <div class="navbar-right">
+                    <!-- User information -->
+                    <p id="signin_status" class="hide navbar-text">
+                        Signed in
+                        <a id="g_username" class="navbar-link" href="#profile"></a>
+                    </p>
+                    <p id="signout_status" class="hide navbar-text">
+                        <a id="btn-signout" href="#">Sign out</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <content>
+        <div class="loading_page">
+            <p class="gplus_loading">Querying your lovely country...</p>
+            <div class="loader-gplus"></div>
+        </div>
+
+        <div class="page page-login container">
+            <!-- CONTENT: login page -->
+            <div class="center-block">
+                <h1 class="bdl-headline">Welcome to BigQuery Taiwan
+                    <br>
+                    <small>The way to query your lovely country</small>
+                </h1>
+
+                <div class="card card-signin" style="margin-bottom: 200px;">
+                    <p>Sign-in With Your Google+ Account</p>
+                    <br>
+
+                    <img id="profile_pic_img" class="img-circle profile-img" src="/static/img/avatar.png" alt="">
+                    <form class="form-signin" action="">
+                        <!--
+                            <input class="form-control" type="text" placeholder="Email...">
+                            <input class="form-control" type="password" placeholder="Password">
+                            -->
+
+                        <a id="btn-signin" class="sprite-google-login-btn"></a>
+                        <!--
+                    <button class="btn btn-lg btn-primary btn-block" id="btn-signin" type="submit">Sign in</button>
+                    -->
+                    </form>
+                </div>
+
+                <!--
+                    <p class="text-center">
+                        <a id="btn-logout-google">Not you? Log out to switch account</a>
+                    </p>
+                    -->
+
+                
+                
+            </div>
+            <!-- CONTENT: login page end -->
+        </div>
+
+        <div class="page page-data page-loggedin container">
+            <h3 class="bdl-headline">Query & Visualization Panel</h3>
+            <p>BigQuery Taiwan is a visualization tool which allows you to query location-based data from Google's BigQuery and perform them on a Taiwan map.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="page-header">
+                        <h4>Compose Your Query</h4>
+                    </div>
+
+                    <form id="query-form" action="#" role="form" method="POST">
+
+                        <div class="form-group">
+                            <label for="queryTextarea">BigQuery query</label>
+<textarea id="code-editor" name="" cols="20" rows="5">
+SELECT _f2,SUM(INTEGER(_f4)) FROM [samples.cancer_data_noheader] GROUP BY _f2 LIMIT 1000</textarea>
+                            <span class="help-block">
+Compose your query here, remember your result of that query need to be in form of two columns, which is ordered in (location, amount).
+                            </span>
+                        </div>
+
+                    </form>
+
+                    <button id="btn-query" class="btn btn-primary">Query</button>
+                    <!--
+                    <button id="btn-reset" class="btn btn-default">Reset</button>
+                    -->
+
+                </div>
+
+                <div class="col-md-6">
+                    <svg id="d3target" width=500 height=500>
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container">
+            <hr>
+            <div id="appengine-mark">
+                <!--
+            <center>
+                <a target="_blank" href="https://developers.google.com/appengine/">
+                    <img class="pull-right" height=42 src="/static/img/powered_by_gae.png" alt="Google App Engine">
+                </a>
+            </center>
+            -->
+                <p>Colin Su, 2014</p>
+            </div>
+        </div>
+
+
+    </content>
+
+
+    
+
+    <!-- bootstrap style -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/select2.min.js"></script>
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/js/backbone.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/mustache.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <!-- Code Mirror -->
+    <!--
+    <script src="/static/js/codemirror/codemirror.js"></script>
+    <script src="/static/js/codemirror/mode/python/python.js"></script>
+    <script src="/static/js/codemirror/mode/sql/sql.js"></script>
+    -->
+    <script src="/static/js/codemirror/codemirror-compressed.js"></script>
+    <!-- SCRIPT: functions -->
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/bigquery.js"></script>
+    <!-- SCRIPT: functions end -->
+
+    <script>
+    init_all_view();
+
+    /*
+            page initialization
+            lock signin button until loaded the endpoints modules.
+            switch to login page (this is a single page app.)
+        */
+    $(function() {
+        lock_signin_btn();
+        switch_page('page-login');
+    });
+
+    /*
+            CLIENT_ID: client id for web application, you should register one 
+                    in your cloud console.
+            SCOPES: reference to OAuth2 scopes, just google that on Google Developer site.
+        */
+    // ORIGINAL LOCAL TESTING
+    var CLIENT_ID = '948499484220-9bd022tr3fhj3qrv9m7b62ir66itjemu.apps.googleusercontent.com'
+
+    console.log("current client id: " + CLIENT_ID);
+
+    var SCOPES = [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/bigquery',
+        'https://www.googleapis.com/auth/plus.login',
+        'https://www.googleapis.com/auth/plus.me',
+        'https://www.googleapis.com/auth/devstorage.read_only'
+    ]
+
+    // Load profile information, callback will be called with one argument, which is the profile data with JSON format.
+    load_gplus_profile = function(callback) {
+        var plus_options = {
+            userId: 'me',
+            field: 'image'
+        };
+
+        gapi.client.plus.people
+            .get(plus_options)
+            .execute(function(profile) {
+                callback(profile);
+            });
+    }
+    // Entry point for endpoints, everything starts from here.
+
+    function load_gapis() {
+        var apiToLoad = 3; // this has to be the same number of libs which called gapi.cliend.load function.
+
+        // here ensures all libs have been loaded well.
+        var loadCallback = function() {
+            if (--apiToLoad === 0) {
+                console.log('loaded');
+                unlock_signin_btn();
+
+                signin_with_gapi(true, function() {
+                    load_gplus_profile(function(profile) {
+                        if (profile.image) {
+                            var profile_pic_url = profile.image.url;
+                            profile_pic_url = profile_pic_url.replace(/sz=50/, "sz=250");
+                            $("#profile_pic_img").attr('src', profile_pic_url);
+                        }
+                    });
+                });
+                $(".loading_page").hide();
+                BigQueryAPI = gapi.client.bigquery;
+            }
+        };
+        gapi.client.load('oauth2', 'v2', loadCallback);
+        gapi.client.load('plus', 'v1', loadCallback);
+        gapi.client.load('bigquery', 'v2', loadCallback);
+    }
+
+    // login method, don't touch this, BLACK MAGIC.
+    var signin_with_gapi = function(immediate, callback) {
+        gapi.auth.authorize({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                immediate: immediate
+            },
+            callback);
+    }
+
+    var login_action = function() {
+
+        load_gplus_profile(function(profile) {
+            var profile_display_name = profile.displayName;
+            $("#g_username").html(profile_display_name);
+
+            $("#signin_status").removeClass('hide');
+            $("#menu-bar").removeClass('hide');
+            $("#signout_status").removeClass('hide');
+
+            // initialize all views
+            BigData_Views.map(function(init_f) {
+                init_f()
+            });
+            switch_page('page-data');
+        });
+    };
+
+    // this is the function to let you login, if you need login just call this one.
+
+    function sign_in() {
+        signin_with_gapi(false, function() {
+            login_action();
+        });
+    }
+    // the same of above one, but this is for sign out.
+
+    function sign_out() {
+        document.location.reload();
+        gapi.auth.setToken(null);
+        gapi.auth.signOut();
+        $("#signin_status").addClass('hide');
+        $("#btn-signout").addClass('hide');
+        $("#signout_status").addClass('hide');
+
+        switch_page('page-login');
+    }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=load_gapis"></script>
+
+</body>
+
+</html>

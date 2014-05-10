@@ -1,0 +1,225 @@
+
+@font-face {
+    font-family: Catull;
+    src: url('/static/fonts/Catull.ttf');
+}
+
+
+#data-preview {
+    font-family: "Monaco", "Consolas", "Courier New";
+}
+
+.sprite-google-login-btn { 
+    display: block;
+    background: url(/static/img/google-login-btn-sprite.png) top left no-repeat; 
+    background-position: 0 -188px; width: 236px; height: 44px; } 
+.sprite-google-login-btn:hover { 
+    cursor: pointer;
+    background-position: 0 -94px; width: 236px; height: 44px; } 
+.sprite-google-login-btn:active { 
+    cursor: pointer;
+    background-position: 0 0; width: 236px; height: 44px; } 
+
+html {
+    -webkit-font-smoothing: antialiased;
+}
+
+
+.bdl-article {
+    line-height: 1.54em;
+}
+
+.bdl-article p {
+    margin-bottom: 25px;
+}
+
+.bdl-article img {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.bdl-article h1,
+.bdl-article h2,
+.bdl-article h3,
+.bdl-article h4,
+.bdl-article h5,
+.bdl-article h6 {
+    margin-top: 50px;
+}
+
+
+body {
+    line-height: 1.54em;
+    padding-bottom: 0;
+    padding-top: 65px;
+    color: #737373;
+    font-family: Arial;
+}
+
+body#chart_body {
+    padding-top: 0px;
+    font-family: Arial;
+    color: #737373;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family:"Open Sans", sans-serif;
+    /*
+    font-weight: 300;
+    */
+
+}
+
+p {
+    line-height: 1.54em;
+}
+
+label,th {
+    font-weight: 500;
+}
+
+li.active > .btn-page {
+    font-weight: 500;
+}
+
+#login-page-logo {
+    float: right;
+    width: 186px;
+}
+
+#login-page-article p {
+    margin-bottom: 2em;
+}
+
+.editor-msg {
+    margin-left: 30px;
+}
+
+.google-font {
+    font-family: Catull;
+}
+.google-font-2 {
+    font-family: "Open Sans";
+    font-weight: 300;
+}
+
+.bg-google-green {
+    background-color: #009925;
+}
+.bg-google-blue {
+    background-color: #3369E8;
+}
+.bg-google-red {
+    background-color: #D50F25;
+}
+.bg-google-yellow {
+    background-color: #EEB211;
+}
+.google-green {
+    color: #009925;
+}
+.google-blue {
+    color: #3369E8;
+}
+.google-red {
+    color: #D50F25;
+}
+.google-yellow {
+    color: #EEB211;
+}
+#website-logo {
+    float: left;
+    width: 45px;
+    margin-right: -10px;
+}
+
+.schema-group {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.form-inline {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#reducer-list-group,#mapper-list-group {
+    padding-top: 18px;
+}
+
+.modal-mapreduce .modal-dialog {
+    width: 960px;
+}
+
+textarea#query {
+    font-family: "Monaco", "Consolas", "Courier New";
+}
+
+.modal-visual .modal-dialog {
+    width: 95%;
+}
+.modal-dialog.google-visualization-charteditor-dialog {
+    width: 900px;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+.bdl-jumbotron {
+    background-image: url(/static/img/about/bdl-banner-tp-dark.png);
+    background-color: #808080;
+    height: 420px;
+    color: white;
+}
+
+.bdl-jumbotron-footer {
+    font-size: 13px;
+    margin-bottom: 0;
+    background: #1D1D1D;
+    color: white;
+}
+
+.bdl-headline {
+    margin-bottom: 25px;
+}
+
+.bdl-headline-top {
+    margin-top: 25px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Open Sans";
+}
+
+
+.btn {
+    cursor: pointer;
+}
+
+a.no-decorate {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.google-logo {
+    width: 100px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.img-row {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.tab-container {
+    padding-top: 20px;
+}
