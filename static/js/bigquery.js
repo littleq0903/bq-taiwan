@@ -1,8 +1,8 @@
 default_bigquery_project_id = "gcdc2013-coder";
 
-BigQueryAPI_query = function (query, callback) {
+BigQueryAPI_query = function (query, queryProjectId, callback) {
     var queryOptions = {
-        projectId: default_bigquery_project_id,
+        projectId: queryProjectId || default_bigquery_project_id,
         query: query
     };
 

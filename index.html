@@ -132,7 +132,12 @@
                     <form id="query-form" action="#" role="form" method="POST">
 
                         <div class="form-group">
-                            <label for="queryTextarea">BigQuery query</label>
+                            <label for="queryProjectId">BigQuery Project</label>
+                            <input id="queryProjectId" class="form-control" type="text" placeholder="Project ID...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="queryTextarea">BigQuery Query</label>
 <textarea id="code-editor" name="" cols="20" rows="5">
 SELECT _f2,AVG(FLOAT(_f4)) FROM [samples.cancer_data_noheader] GROUP BY _f2 LIMIT 1000</textarea>
                             <span class="help-block">

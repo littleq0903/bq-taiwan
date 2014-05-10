@@ -109,12 +109,12 @@ function init_data_view (){
         // save for syncing textview and the editor
         sqlEditor.save();
         var query = $("#code-editor").val();
+        var queryProjectId = $("#queryProjectId").val();
 
         // do query api
-        BigQueryAPI_query(query, function(data) {
-            var result = data.rows;
+        BigQueryAPI_query(query, queryProjectId, function(data) {
             // transform the data from object to array
-            var rows = result.map(function(row) {return [ row.f[0].v, parseFloat(row.f[1].v) ]});
+            var rows = data.rows.map(function(row) {return [ row.f[0].v, parseFloat(row.f[1].v) ]});
 
             // reset the MapData
             MapData = {};
@@ -127,6 +127,7 @@ function init_data_view (){
                 MapData[name] = 0;
             });
 
+            // accumulate the value of MapData
             rows.map(function(r) {
                 var name = r[0];
                 var value = r[1];
@@ -134,6 +135,7 @@ function init_data_view (){
                 MapData[name] += value ;
             });
 
+            // visualize the data
             update_map_view();
         });
 
