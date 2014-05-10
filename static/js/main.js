@@ -131,6 +131,7 @@ function init_data_view (){
             var result = data.rows;
             var rows = result.map(function(row) {return [ row.f[0].v, parseFloat(row.f[1].v) ]});
 
+            // reset the MapData
             MapData = {};
         
             rows.map(function(r) {
@@ -180,20 +181,24 @@ function init_map_view () {
 }
 
 update_map_view = function () {
-    colorPatterns = ["#DFDFDF","#00933B", "#0266C8", "#F2B50F", "#F90101"];
     var minBound = 10000000;
     var maxBound = 0;
+
+    // determine the boundary
     for (var k in MapData) {
         var v = MapData[k];
         if (v > maxBound) maxBound = v;
         if (v < minBound) minBound = v;
     }
-    var partition = ( maxBound - minBound )/ colorPatterns.length;
-    domainPartition = _.range(5).map(function(v){return minBound + v*partition;});
+    
+    // hard code min, max bound for presenting effect
+    minBound = 0;
+    maxBound = 28;
 
-    console.log(maxBound);
-    console.log(colorPatterns);
-    console.log(domainPartition);
+    var partition = ( maxBound - minBound )/ colorPatterns.length;
+    var colorPatterns = ["#DFDFDF","#00933B", "#0266C8", "#F2B50F", "#F90101"];
+    var domainPartition = _.range(5).map(function(v){return minBound + v*partition;});
+
 
     // define color map
     var colorMap = d3.scale.linear()
@@ -205,13 +210,10 @@ update_map_view = function () {
         topo.features[i].properties.value = MapData[topo.features[i].properties.name]
     }
 
-    
     // do filling
     blocks.attr("fill",function(it){
-        console.log(it);
         var color = colorMap(it.properties.value);
-        console.log(color);
-        if (  color !== "#NaNNaNNaN") return color;
+        if ( color !== "#NaNNaNNaN" ) return color;
         return "#DFDFDF";
     });
 }
