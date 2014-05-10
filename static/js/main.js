@@ -144,7 +144,7 @@ function init_data_view (){
                 var name = r[0];
                 var value = r[1];
             
-                MapData[name] += value;
+                MapData[name] += value ;
             });
 
             update_map_view();
@@ -180,24 +180,38 @@ function init_map_view () {
 }
 
 update_map_view = function () {
+    colorPatterns = ["#DFDFDF","#00933B", "#0266C8", "#F2B50F", "#F90101"];
+    var minBound = 10000000;
     var maxBound = 0;
     for (var k in MapData) {
         var v = MapData[k];
         if (v > maxBound) maxBound = v;
+        if (v < minBound) minBound = v;
     }
+    var partition = ( maxBound - minBound )/ colorPatterns.length;
+    domainPartition = _.range(5).map(function(v){return minBound + v*partition;});
+
+    console.log(maxBound);
+    console.log(colorPatterns);
+    console.log(domainPartition);
 
     // define color map
     var colorMap = d3.scale.linear()
-        .domain([0,maxBound])
-        .range(["#DFDFDF","#00933B"]);
+        .domain(domainPartition)
+        .range(colorPatterns);
 
     // update MapData
     for(i = 0; i < topo.features.length; i ++ ) {
         topo.features[i].properties.value = MapData[topo.features[i].properties.name]
     }
 
+    
     // do filling
     blocks.attr("fill",function(it){
-        return colorMap(it.properties.value);
+        console.log(it);
+        var color = colorMap(it.properties.value);
+        console.log(color);
+        if (  color !== "#NaNNaNNaN") return color;
+        return "#DFDFDF";
     });
 }

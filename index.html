@@ -134,7 +134,7 @@
                         <div class="form-group">
                             <label for="queryTextarea">BigQuery query</label>
 <textarea id="code-editor" name="" cols="20" rows="5">
-SELECT _f2,SUM(INTEGER(_f4)) FROM [samples.cancer_data_noheader] GROUP BY _f2 LIMIT 1000</textarea>
+SELECT _f2,AVG(FLOAT(_f4)) FROM [samples.cancer_data_noheader] GROUP BY _f2 LIMIT 1000</textarea>
                             <span class="help-block">
 Compose your query here, remember your result of that query need to be in form of two columns, which is ordered in (location, amount).
                             </span>
