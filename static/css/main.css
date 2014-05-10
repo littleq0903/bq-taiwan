@@ -1,7 +1,7 @@
 
 @font-face {
     font-family: Catull;
-    src: url('/static/fonts/Catull.ttf');
+    src: url('static/fonts/Catull.ttf');
 }
 
 
@@ -11,7 +11,7 @@
 
 .sprite-google-login-btn { 
     display: block;
-    background: url(/static/img/google-login-btn-sprite.png) top left no-repeat; 
+    background: url(static/img/google-login-btn-sprite.png) top left no-repeat; 
     background-position: 0 -188px; width: 236px; height: 44px; } 
 .sprite-google-login-btn:hover { 
     cursor: pointer;
@@ -168,7 +168,7 @@ tbody tr {
 }
 
 .bdl-jumbotron {
-    background-image: url(/static/img/about/bdl-banner-tp-dark.png);
+    background-image: url(static/img/about/bdl-banner-tp-dark.png);
     background-color: #808080;
     height: 420px;
     color: white;
