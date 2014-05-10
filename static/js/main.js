@@ -1,10 +1,8 @@
-
 /*
  * Views' Initialization
  *
  * for adding a view please add the function and the function name into views_to_init
  */
-
 BigData_Views = [
     init_data_view,
     init_map_view
@@ -39,14 +37,6 @@ function init_all_view () {
         sign_out();
     });
 
-    // switch between functionalities
-    $("#tabbar li a").click(function(e){
-        e.preventDefault();
-        tab_name = $(this).attr('id').split('-')[1];
-        console.log(tab_name);
-        switch_tab(tab_name);
-    });
-
     // logout the google user and back
     $("#btn-logout-google").click(function(){
         logout_google_user();
@@ -76,7 +66,6 @@ function init_all_view () {
         $(page_class_name).removeClass("hide");
 
         if (page_name == "page-data") update_data_view();
-
     }
 
     // this is the function to switch between every functionalities in our website.
@@ -102,17 +91,10 @@ function init_all_view () {
 }
 
 /*
-######     #    #######    #
-#     #   # #      #      # #
-#     #  #   #     #     #   #
-#     # #     #    #    #     #
-#     # #######    #    #######
-#     # #     #    #    #     #
-######  #     #    #    #     #
- *
- * Data View initialization
+ * Query View initialization
  */
 function init_data_view (){
+    // initial CodeMirror code editor for placing users' query
     var codeEditor = document.getElementById("code-editor");
     sqlEditor = CodeMirror.fromTextArea(codeEditor, {
         mode: "text/x-sql",
@@ -121,19 +103,23 @@ function init_data_view (){
         lineNumbers: true
     });
 
+    // click on 'query' button will send out the query and get back the result
     $("#btn-query").click(function(e){
+
+        // save for syncing textview and the editor
         sqlEditor.save();
         var query = $("#code-editor").val();
-        console.log(query);
 
+        // do query api
         BigQueryAPI_query(query, function(data) {
-            console.log(data);
             var result = data.rows;
+            // transform the data from object to array
             var rows = result.map(function(row) {return [ row.f[0].v, parseFloat(row.f[1].v) ]});
 
             // reset the MapData
             MapData = {};
         
+            // init the value of MapData
             rows.map(function(r) {
                 var name = r[0];
                 var value = r[1];
@@ -153,14 +139,21 @@ function init_data_view (){
 
     });
 }
-
 update_data_view = function () {
+    /*
+     * because at the first we need to hide everything,
+     * here's a code mirror issue, you will need to refresh one times
+     * in order to make the editor appear.
+     */
     sqlEditor.refresh();
 }
 BigData_Views_Update['data'] = update_data_view;
 
 
 function init_map_view () {
+    /*
+     * Initialize the Taiwan map
+     */
     d3.json("static/data/twCounty2010.topo.json", function (data) {
         // load data with topojson.js
         console.log(data);
@@ -181,6 +174,9 @@ function init_map_view () {
 }
 
 update_map_view = function () {
+    /*
+     * Update the map by the MapData
+     */
     var minBound = 10000000;
     var maxBound = 0;
 
@@ -195,8 +191,8 @@ update_map_view = function () {
     minBound = 0;
     maxBound = 28;
 
-    var partition = ( maxBound - minBound )/ colorPatterns.length;
     var colorPatterns = ["#DFDFDF","#00933B", "#0266C8", "#F2B50F", "#F90101"];
+    var partition = ( maxBound - minBound )/ colorPatterns.length;
     var domainPartition = _.range(5).map(function(v){return minBound + v*partition;});
 
 
