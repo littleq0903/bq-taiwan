@@ -160,7 +160,7 @@ BigData_Views_Update['data'] = update_data_view;
 
 
 function init_map_view () {
-    d3.json("/static/data/twCounty2010.topo.json", function (data) {
+    d3.json("static/data/twCounty2010.topo.json", function (data) {
         // load data with topojson.js
         console.log(data);
         topo = topojson.feature(data, data.objects["twCounty2010.geo"]);
