@@ -1,4 +1,5 @@
 require! <[gulp gulp-util gulp-livescript]>
+gutil = gulp-util
 
 gulp.task 'js:app' ->
   app = gulp.src 'app/**/*.ls'

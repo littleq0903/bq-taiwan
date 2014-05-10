@@ -13,3 +13,4 @@ devDependencies:
   LiveScript: '1.2.x'
   gulp: '~3.5.0'
   'gulp-livescript': '~0.1.1'
+  'gulp-util': '~2.2.13'

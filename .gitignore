@@ -40,4 +40,5 @@ node_modules
 
 # LiveScript
 package.json
+gulpfile.json
 
