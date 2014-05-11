@@ -19,7 +19,6 @@ init-data-view = !->
     theme: \base16-light
     line-wrapping: true
     line-numbers: true
-    
 
   /*
   Here describes how to get various data from BigQuery API
@@ -41,10 +40,6 @@ init-data-view = !->
       dataset-id: \samples
     .execute
     console.log tables.map (.id)
-    
-
-
-    
 
   $ \#btn-query .click (e) !->
     sql-editor.save!
