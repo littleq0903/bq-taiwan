@@ -1,5 +1,5 @@
-var defaultBigqueryProjectId, bigqueryApiQuery;
-defaultBigqueryProjectId = 'gcdc2013-coder';
+var defaultBigqueryProjectId, bigqueryApiQuery, out$ = typeof exports != 'undefined' && exports || this;
+out$.defaultBigqueryProjectId = defaultBigqueryProjectId = 'gcdc2013-coder';
 bigqueryApiQuery = function(query, queryProjectId, callback){
   var queryOptions;
   console.log(defaultBigqueryProjectId);

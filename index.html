@@ -95,7 +95,9 @@
             <!-- CONTENT: query panel page -->
             <!-- title -->
             <h3 class="bdl-headline">Query & Visualization Panel</h3>
-            <p>BigQuery Taiwan is a visualization tool which allows you to query location-based data from Google's BigQuery and perform them on a Taiwan map.</p>
+<p>
+BigQuery Taiwan is a visualization tool which allows you to query location-based data from Google's BigQuery and perform them on a Taiwan map.
+</p>
 
             <!-- panel -->
             <div class="row">
@@ -120,22 +122,26 @@
 SELECT _f2,AVG(FLOAT(_f4)) FROM [samples.cancer_data_noheader] GROUP BY _f2 LIMIT 1000;
 </textarea>
 
-                            <span class="help-block">
+<span class="help-block">
 Compose your query here, remember your result of that query need to be in form of two columns, which is ordered in (location, amount).
-                            </span>
+</span>
                         </div>
 
                     </form>
 
-                    <!-- submit button -->
-                    <button id="btn-query" class="btn btn-primary">Query</button>
+<!-- submit button -->
+<button id="btn-query" class="btn btn-primary">
+Query
+</button>
 
                 </div>
 
                 <div class="col-md-6">
+
                     <!-- Taiwan map -->
-                    <svg id="d3target" width=500 height=500>
+                    <svg id="d3target" width="100%" height="100%">
                     </svg>
+
                 </div>
             </div>
 

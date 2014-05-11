@@ -1,4 +1,4 @@
-default-bigquery-project-id = 'gcdc2013-coder'
+export default-bigquery-project-id = 'gcdc2013-coder'
 
 bigquery-api-query = (query, query-project-id, callback) ->
 

@@ -19,6 +19,32 @@ init-data-view = !->
     theme: \base16-light
     line-wrapping: true
     line-numbers: true
+    
+
+  /*
+  Here describes how to get various data from BigQuery API
+  TODO: table autocompletion
+  */
+  do
+    {projects} <- bigquery-api.projects.list!execute
+    console.log projects.map (.id)
+
+  do
+    {datasets} <- bigquery-api.datasets.list do
+      project-id: default-bigquery-project-id
+    .execute
+    console.log datasets.map (.id)
+
+  do
+    {tables} <- bigquery-api.tables.list do
+      project-id: default-bigquery-project-id
+      dataset-id: \samples
+    .execute
+    console.log tables.map (.id)
+    
+
+
+    
 
   $ \#btn-query .click (e) !->
     sql-editor.save!
@@ -61,7 +87,7 @@ init-map-view = !->
     # prepare a Mercator projection for Taiwan
     prj = d3.geo.mercator!
       .center [ 122.999531, 23.978567 ]
-      .scale 30000
+      .scale 35000
     path = d3.geo.path!
       .projection prj
 

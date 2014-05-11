@@ -22,6 +22,36 @@ initDataView = function(){
     lineWrapping: true,
     lineNumbers: true
   });
+  /*
+  Here describes how to get various data from BigQuery API
+  TODO: table autocompletion
+  */
+  bigqueryApi.projects.list().execute(function(arg$){
+    var projects;
+    projects = arg$.projects;
+    return console.log(projects.map(function(it){
+      return it.id;
+    }));
+  });
+  bigqueryApi.datasets.list({
+    projectId: defaultBigqueryProjectId
+  }).execute(function(arg$){
+    var datasets;
+    datasets = arg$.datasets;
+    return console.log(datasets.map(function(it){
+      return it.id;
+    }));
+  });
+  bigqueryApi.tables.list({
+    projectId: defaultBigqueryProjectId,
+    datasetId: 'samples'
+  }).execute(function(arg$){
+    var tables;
+    tables = arg$.tables;
+    return console.log(tables.map(function(it){
+      return it.id;
+    }));
+  });
   $('#btn-query').click(function(e){
     var query, queryProjectId;
     sqlEditor.save();
@@ -60,7 +90,7 @@ initMapView = function(){
   d3.json("static/data/twCounty2010.topo.json", function(data){
     var topo, prj, path, blocks;
     topo = topojson.feature(data, data.objects["twCounty2010.geo"]);
-    prj = d3.geo.mercator().center([122.999531, 23.978567]).scale(30000);
+    prj = d3.geo.mercator().center([122.999531, 23.978567]).scale(35000);
     path = d3.geo.path().projection(prj);
     blocks = d3.select("svg#d3target").selectAll("path").data(topo.features).enter().append("path").attr("d", path);
     blocks.attr('fill', function(){
