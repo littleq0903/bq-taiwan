@@ -114,7 +114,7 @@ update-map-view = !->
   max-bound = _.max vals
 
   color-patterns = <[#DFDFDF #00933B #0266C8 #F2B50F #F90101]>
-  partition = ( maxBound - minBound ) / colorPatterns.length
+  partition = ( max-bound - min-bound ) / colorPatterns.length
   domain-partition = _.range 5 .map (v) -> min-bound + v * partition
 
   # define color map
@@ -158,10 +158,9 @@ load-gplus-profile = (callback) !->
     * user-id: \me
       field: \image
 
-  google-plus-api.people
-    .get plus-options
-    .execute (profile) !->
-      callback profile
+  do
+    profile <- google-plus-api.people.get plus-options .execute
+    callback profile
 
 load-gapis = !->
   api-to-load = 3
@@ -171,16 +170,13 @@ load-gapis = !->
       export bigquery-api = gapi.client.bigquery
       export google-plus-api = gapi.client.plus
 
+      do
+        <-! signin-with-gapi true
+        do
+          {image} <-! load-gplus-profile
+          $ "\#profile_pic_img" .attr \src, image.url.replace /sz=50/, "sz=250" if image
+
       unlock-signin-btn!
-
-      signin-with-gapi true, !->
-        load-gplus-profile (profile) !->
-          if profile.image
-            profile-pic-url = profile.image.url
-              .replace /sz=50/, "sz=250"
-
-            $ "\#profile_pic_img"
-              .attr \src, profile-pic-url
       $ \.loading_page .hide!
 
   gapi.client.load \oauth2 \v2 load-callback
@@ -195,22 +191,22 @@ signin-with-gapi = (immediate, callback) !->
     callback
 
 login-action = !->
-  load-gplus-profile (profile) ->
-    profile-display-name = profile.display-name
-    $ "\#g_username" .html profile-display-name
-
+  do
+    {display-name} <- load-gplus-profile
+    $ "\#g_username" .html display-name
 
     $ "\#signin_status" .removeClass 'hide'
     $ "\#menu-bar" .removeClass 'hide'
     $ "\#signout_status" .removeClass 'hide'
 
     # initialize all views
-    bigdata-views.map (init_f) !->
-      init_f!
+    bigdata-views.map (it) ->
+      it!
     switch-page \page-data
 
 sign-in = !->
-  signin-with-gapi false, !->
+  do
+    <-! signin-with-gapi false
     login-action!
 
 sign-out = !->

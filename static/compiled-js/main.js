@@ -149,7 +149,7 @@ loadGplusProfile = function(callback){
     field: 'image'
   };
   googlePlusApi.people.get(plusOptions).execute(function(profile){
-    callback(profile);
+    return callback(profile);
   });
 };
 loadGapis = function(){
@@ -160,16 +160,16 @@ loadGapis = function(){
     if (--apiToLoad === 0) {
       out$.bigqueryApi = bigqueryApi = gapi.client.bigquery;
       out$.googlePlusApi = googlePlusApi = gapi.client.plus;
-      unlockSigninBtn();
       signinWithGapi(true, function(){
-        loadGplusProfile(function(profile){
-          var profilePicUrl;
-          if (profile.image) {
-            profilePicUrl = profile.image.url.replace(/sz=50/, "sz=250");
-            $("#profile_pic_img").attr('src', profilePicUrl);
+        loadGplusProfile(function(arg$){
+          var image;
+          image = arg$.image;
+          if (image) {
+            $("#profile_pic_img").attr('src', image.url.replace(/sz=50/, "sz=250"));
           }
         });
       });
+      unlockSigninBtn();
       $('.loading_page').hide();
     }
   };
@@ -185,15 +185,15 @@ signinWithGapi = function(immediate, callback){
   }, callback);
 };
 loginAction = function(){
-  loadGplusProfile(function(profile){
-    var profileDisplayName;
-    profileDisplayName = profile.displayName;
-    $("#g_username").html(profileDisplayName);
+  loadGplusProfile(function(arg$){
+    var displayName;
+    displayName = arg$.displayName;
+    $("#g_username").html(displayName);
     $("#signin_status").removeClass('hide');
     $("#menu-bar").removeClass('hide');
     $("#signout_status").removeClass('hide');
-    bigdataViews.map(function(init_f){
-      init_f();
+    bigdataViews.map(function(it){
+      return it();
     });
     return switchPage('page-data');
   });
