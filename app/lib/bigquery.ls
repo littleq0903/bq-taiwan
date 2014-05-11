@@ -1,10 +1,13 @@
-defualt-bq-project-id = 'gcdc2013-coder'
+default-bigquery-project-id = 'gcdc2013-coder'
 
 bigquery-api-query = (query, query-project-id, callback) ->
+
+  console.log default-bigquery-project-id
+
   query-options =
-    * project-id: query-project-id or default_bigquery_project_id
+    * project-id: query-project-id or default-bigquery-project-id
       query: query
 
-  BigQueryAPI.jobs.query query-options .execute callback
+  bigquery-api.jobs.query query-options .execute callback
 
 

@@ -160,16 +160,17 @@ Compose your query here, remember your result of that query need to be in form o
     <script src="static/js/lib/mustache.js"></script>
     <script src="static/js/lib/d3.min.js"></script>
     <script src="static/js/lib/topojson.v1.min.js"></script>
+    <script src="static/js/lib/prelude-browser-min.js"></script>
     <!-- Code Mirror -->
     <script src="static/js/codemirror/codemirror-compressed.js"></script>
     <!-- SCRIPT: functions -->
-    <script src="static/js/utils.js"></script>
-    <script src="static/js/main.js"></script>
+    <script src="static/compiled-js/lib/utils.js"></script>
     <script src="static/compiled-js/lib/bigquery.js"></script>
+    <script src="static/compiled-js/main.js"></script>
     <!-- SCRIPT: functions end -->
 
     <!-- load google api client and callback to the main function (entry point) -->
-    <script src="https://apis.google.com/js/client.js?onload=load_gapis"></script>
+    <script src="https://apis.google.com/js/client.js?onload=loadGapis"></script>
 
 </body>
 
