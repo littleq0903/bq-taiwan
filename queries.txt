@@ -1,0 +1,19 @@
+-- show data
+
+SELECT * FROM samples.cancer_data_noheader LIMIT 20;
+
+SELECT _f2,_f4 FROM samples.cancer_data_noheader LIMIT 20;
+
+-- overall average
+
+SELECT _f2,AVG(FLOAT(_f4)) FROM samples.cancer_data_noheader GROUP BY _f2;
+
+-- bigquery taiwan
+
+-- in 1996
+SELECT _f2,AVG(FLOAT(_f4)) as f4 FROM samples.cancer_data_noheader WHERE _f0 = "1996" GROUP BY _f2 ORDER BY f4 LIMIT 25;
+
+-- in 2010
+SELECT _f2,AVG(FLOAT(_f4)) as f4 FROM samples.cancer_data_noheader WHERE _f0 = "2010" GROUP BY _f2 ORDER BY f4 LIMIT 25;
+
+-- vim:ft=sql
