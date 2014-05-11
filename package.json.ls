@@ -9,8 +9,11 @@ scripts:
   dev: 'gulp --require LiveScript dev'
 dependencies: {}
 devDependencies:
-  express: '3.4.x'
-  LiveScript: '1.2.x'
-  gulp: '~3.5.0'
-  'gulp-livescript': '~0.1.1'
-  'gulp-util': '~2.2.13'
+  \express : '3.4.x'
+  \LiveScript : '1.2.x'
+  \gulp : '~3.5.0'
+  \gulp-livescript : '~0.1.1'
+  \gulp-util : '~2.2.13'
+  \connect-livereload : '~0.3.2'
+  \tiny-lr : '~0.0.5'
+

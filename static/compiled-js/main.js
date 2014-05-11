@@ -1,4 +1,4 @@
-var prelude, initAllView, initDataView, updateDataView, initMapView, updateMapView, switchPage, clientId, scopes, loadGplusProfile, loadGapis, signinWithGapi, loginAction, signIn, signOut, bigdataViews, out$ = typeof exports != 'undefined' && exports || this;
+var prelude, initAllView, initDataView, updateDataView, initMapView, updateMapView, clientId, scopes, loadGplusProfile, loadGapis, signinWithGapi, loginAction, signIn, signOut, bigdataViews, out$ = typeof exports != 'undefined' && exports || this;
 prelude = require('prelude-ls');
 initAllView = function(){
   $('#btn-signin').click(function(e){
@@ -10,6 +10,9 @@ initAllView = function(){
     signOut();
   });
 };
+/*
+Data View Initialization
+*/
 initDataView = function(){
   var codeEditor, sqlEditor;
   codeEditor = document.getElementById('code-editor');
@@ -50,6 +53,9 @@ initDataView = function(){
 updateDataView = function(){
   sqlEditor.refresh();
 };
+/*
+Map View Initialization
+*/
 initMapView = function(){
   d3.json("static/data/twCounty2010.topo.json", function(data){
     var topo, prj, path, blocks;
@@ -96,21 +102,10 @@ updateMapView = function(){
     }
   });
 };
+/*
+main
+*/
 initAllView();
-switchPage = function(pageName){
-  var inOptions, pageClassName;
-  inOptions = {
-    queue: true,
-    duration: 500
-  };
-  pageClassName = "." + pageName;
-  console.log(pageClassName);
-  $('.page').addClass('hide');
-  $(pageClassName).fadeIn(inOptions).removeClass('hide');
-  if (pageName === 'page-data') {
-    updateDataView();
-  }
-};
 $(function(){
   lockSigninBtn();
   switchPage('page-login');

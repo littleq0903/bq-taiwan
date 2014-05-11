@@ -9,6 +9,9 @@ init-all-view = !->
     e.prevent-default!
     sign-out!
 
+/*
+Data View Initialization
+*/
 init-data-view = !->
   code-editor = document.get-element-by-id \code-editor
   sql-editor = CodeMirror.fromTextArea code-editor, do
@@ -46,6 +49,9 @@ init-data-view = !->
 update-data-view = !->
   sql-editor.refresh!
 
+/*
+Map View Initialization
+*/
 init-map-view = !->
 
   d3.json "static/data/twCounty2010.topo.json" (data) !->
@@ -102,25 +108,11 @@ update-map-view = !->
     else
       \#DFDFDF
 
-
+/*
+main
+*/
 init-all-view!
 
-switch-page = (page-name) !->
-  in-options =
-    queue: true,
-    duration: 500
-
-  page-class-name = ".#page-name"
-
-  console.log page-class-name
-
-  $ \.page .addClass \hide
-  $ page-class-name
-    .fade-in in-options
-    .remove-class \hide
-
-  if page-name is \page-data
-    update-data-view!
 
 $ !->
   lock-signin-btn!
