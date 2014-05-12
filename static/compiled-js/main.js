@@ -1,6 +1,8 @@
-var prelude, initAllView, initDataView, updateDataView, initMapView, updateMapView, clientId, scopes, loadGplusProfile, loadGapis, signinWithGapi, loginAction, signIn, signOut, bigdataViews, out$ = typeof exports != 'undefined' && exports || this;
-prelude = require('prelude-ls');
-initAllView = function(){
+var bigdataViews, mapData, clientId, scopes, loadGplusProfile, loadGapis, signinWithGapi, loginAction, signIn, signOut, out$ = typeof exports != 'undefined' && exports || this;
+bigdataViews = [initDataView, initMapView];
+mapData = {};
+out$.initAllView = initAllView;
+function initAllView(){
   $('#btn-signin').click(function(e){
     e.preventDefault();
     signIn();
@@ -9,84 +11,76 @@ initAllView = function(){
     e.preventDefault();
     signOut();
   });
-};
+}
 /*
 Data View Initialization
 */
-initDataView = function(){
-  var codeEditor, sqlEditor;
-  codeEditor = document.getElementById('code-editor');
-  sqlEditor = CodeMirror.fromTextArea(codeEditor, {
+out$.initDataView = initDataView;
+function initDataView(){
+  var editorTextarea, sqlEditor;
+  editorTextarea = document.getElementById('code-editor');
+  out$.sqlEditor = sqlEditor = CodeMirror.fromTextArea(editorTextarea, {
     mode: 'text/x-sql',
     theme: 'base16-light',
     lineWrapping: true,
     lineNumbers: true
   });
-  /*
-  Here describes how to get various data from BigQuery API
-  TODO: table autocompletion
-  */
-  bigqueryApi.projects.list().execute(function(arg$){
-    var projects;
-    projects = arg$.projects;
-    return console.log(projects.map(function(it){
-      return it.id;
-    }));
-  });
-  bigqueryApi.datasets.list({
-    projectId: defaultBigqueryProjectId
-  }).execute(function(arg$){
-    var datasets;
-    datasets = arg$.datasets;
-    return console.log(datasets.map(function(it){
-      return it.id;
-    }));
-  });
-  bigqueryApi.tables.list({
-    projectId: defaultBigqueryProjectId,
-    datasetId: 'samples'
-  }).execute(function(arg$){
-    var tables;
-    tables = arg$.tables;
-    return console.log(tables.map(function(it){
-      return it.id;
-    }));
-  });
-  $('#btn-query').click(function(e){
+  $('#btn-query').click(function(clickEvent){
     var query, queryProjectId;
     sqlEditor.save();
     query = $('#code-editor').val();
     queryProjectId = $('#query-project-id').val();
     bigqueryApiQuery(query, queryProjectId, function(data){
-      var rows, mapData;
+      var rows;
       rows = data.rows.map(function(row){
         return [row.f[0].v, parseFloat(row.f[1].v)];
       });
-      out$.mapData = mapData = {};
-      rows.map(function(r){
+      mapData = {};
+      rows.map(function(arg$){
         var name, value;
-        name = r[0];
-        value = r[1];
+        name = arg$[0], value = arg$[1];
         mapData[name] = 0;
       });
-      rows.map(function(r){
+      rows.map(function(arg$){
         var name, value;
-        name = r[0];
-        value = r[1];
+        name = arg$[0], value = arg$[1];
         mapData[name] += value;
       });
       updateMapView();
     });
   });
-  out$.sqlEditor = sqlEditor;
-};
-updateDataView = function(){
+  /*
+  Here describes how to get various data from BigQuery API
+  TODO: table autocompletion
+  */
+  /*
+  do
+    {projects} <- bigquery-api.projects.list!execute
+    console.log projects.map (.id)
+  
+  do
+    {datasets} <- bigquery-api.datasets.list do
+      project-id: default-bigquery-project-id
+    .execute
+    console.log datasets.map (.id)
+  
+  do
+    {tables} <- bigquery-api.tables.list do
+      project-id: default-bigquery-project-id
+      dataset-id: \samples
+    .execute
+    console.log tables.map (.id)
+  */
+}
+out$.updateDataView = updateDataView;
+function updateDataView(){
   sqlEditor.refresh();
-};
+}
 /*
 Map View Initialization
 */
-initMapView = function(){
+out$.initMapView = initMapView;
+function initMapView(){
   d3.json("static/data/twCounty2010.topo.json", function(data){
     var topo, prj, path, blocks;
     topo = topojson.feature(data, data.objects["twCounty2010.geo"]);
@@ -99,8 +93,9 @@ initMapView = function(){
     out$.blocks = blocks;
     out$.topo = topo;
   });
-};
-updateMapView = function(){
+}
+out$.updateMapView = updateMapView;
+function updateMapView(){
   /*
     * Update the map by the map-data
     */
@@ -131,7 +126,7 @@ updateMapView = function(){
       return '#DFDFDF';
     }
   });
-};
+}
 /*
 main
 */
@@ -153,14 +148,19 @@ loadGplusProfile = function(callback){
   });
 };
 loadGapis = function(){
-  var apiToLoad, loadCallback;
+  var apiToLoad;
   apiToLoad = 3;
-  loadCallback = function(){
+  gapi.client.load('oauth2', 'v2', loadApiCallback);
+  gapi.client.load('plus', 'v1', loadApiCallback);
+  gapi.client.load('bigquery', 'v2', loadApiCallback);
+  function loadApiCallback(){
     var bigqueryApi, googlePlusApi;
     if (--apiToLoad === 0) {
       out$.bigqueryApi = bigqueryApi = gapi.client.bigquery;
       out$.googlePlusApi = googlePlusApi = gapi.client.plus;
-      signinWithGapi(true, function(){
+      unlockSigninBtn();
+      $('.loading_page').hide();
+      return signinWithGapi(true, function(){
         loadGplusProfile(function(arg$){
           var image;
           image = arg$.image;
@@ -169,13 +169,8 @@ loadGapis = function(){
           }
         });
       });
-      unlockSigninBtn();
-      $('.loading_page').hide();
     }
-  };
-  gapi.client.load('oauth2', 'v2', loadCallback);
-  gapi.client.load('plus', 'v1', loadCallback);
-  gapi.client.load('bigquery', 'v2', loadCallback);
+  }
 };
 signinWithGapi = function(immediate, callback){
   gapi.auth.authorize({
@@ -206,7 +201,6 @@ signIn = function(){
 signOut = function(){
   document.location.reload();
 };
-bigdataViews = [initDataView, initMapView];
 function deepEq$(x, y, type){
   var toString = {}.toString, hasOwnProperty = {}.hasOwnProperty,
       has = function (obj, key) { return hasOwnProperty.call(obj, key); };

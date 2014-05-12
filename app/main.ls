@@ -1,6 +1,7 @@
-prelude = require 'prelude-ls'
+bigdata-views = [ init-data-view, init-map-view ]
+map-data = {}
 
-init-all-view = !->
+export !function init-all-view
   $ '#btn-signin' .click (e) !->
     e.prevent-default!
     sign-in!
@@ -12,18 +13,44 @@ init-all-view = !->
 /*
 Data View Initialization
 */
-init-data-view = !->
-  code-editor = document.get-element-by-id \code-editor
-  sql-editor = CodeMirror.fromTextArea code-editor, do
+export !function init-data-view
+  editor-textarea = document.get-element-by-id \code-editor
+  export sql-editor = CodeMirror.fromTextArea editor-textarea, do
     mode: \text/x-sql
     theme: \base16-light
     line-wrapping: true
     line-numbers: true
 
+
+  do
+    click-event <-! $ \#btn-query .click
+    # sync editor with textarea
+    sql-editor.save!
+
+    # retrieve data from fields
+    query = $ \#code-editor .val!
+    query-project-id = $ \#query-project-id .val!
+
+    # go bigquery query
+    do
+      data <-! bigquery-api-query query, query-project-id
+
+      # transform the data
+      rows = data.rows.map (row) -> [ row.f[0].v, parse-float row.f[1].v ]
+
+      # accumalate the data
+      map-data := {}
+      rows.map ([name, value]) !-> map-data[name] = 0
+      rows.map ([name, value]) !-> map-data[name] += value
+
+      # render the visualized data on the map
+      update-map-view!
+
   /*
   Here describes how to get various data from BigQuery API
   TODO: table autocompletion
   */
+  /*
   do
     {projects} <- bigquery-api.projects.list!execute
     console.log projects.map (.id)
@@ -40,42 +67,19 @@ init-data-view = !->
       dataset-id: \samples
     .execute
     console.log tables.map (.id)
+  */
 
-  $ \#btn-query .click (e) !->
-    sql-editor.save!
-
-    query = $ \#code-editor .val!
-    query-project-id = $ \#query-project-id .val!
-
-    bigquery-api-query query, query-project-id, (data) !->
-      rows = data.rows.map (row) -> [ row.f[0].v, parse-float row.f[1].v ]
-
-      export map-data = {}
-
-      rows.map (r) !->
-        name = r[0]
-        value = r[1]
-
-        map-data[name] = 0
-
-      rows.map (r) !->
-        name = r[0]
-        value = r[1]
-
-        map-data[name] += value
-
-      update-map-view!
-  export sql-editor
-
-update-data-view = !->
+export !function update-data-view
   sql-editor.refresh!
 
 /*
 Map View Initialization
 */
-init-map-view = !->
+export !function init-map-view
+  # initialize the taiwan map
+  do
+    data <-! d3.json "static/data/twCounty2010.topo.json"
 
-  d3.json "static/data/twCounty2010.topo.json" (data) !->
     # load data with topojson.js
     topo = topojson.feature data, data.objects["twCounty2010.geo"]
 
@@ -98,7 +102,7 @@ init-map-view = !->
 
     export blocks, topo
 
-update-map-view = !->
+export !function update-map-view
   /*
     * Update the map by the map-data
     */
@@ -108,6 +112,7 @@ update-map-view = !->
   min-bound = _.min vals
   max-bound = _.max vals
 
+  # calculate size of partition
   color-patterns = <[#DFDFDF #00933B #0266C8 #F2B50F #F90101]>
   partition = ( max-bound - min-bound ) / colorPatterns.length
   domain-partition = _.range 5 .map (v) -> min-bound + v * partition
@@ -124,10 +129,7 @@ update-map-view = !->
   # do filling
   blocks.attr "fill", (it) ->
     color = colorMap it.properties.value
-    if color !== \#NaNNaNNaN
-      color
-    else
-      \#DFDFDF
+    if color !== \#NaNNaNNaN then color else \#DFDFDF
 
 /*
 main
@@ -158,25 +160,27 @@ load-gplus-profile = (callback) !->
     callback profile
 
 load-gapis = !->
+  # totally 3 api to load
   api-to-load = 3
+  gapi.client.load \oauth2 \v2 load-api-callback
+  gapi.client.load \plus \v1 load-api-callback
+  gapi.client.load \bigquery \v2 load-api-callback
 
-  load-callback = !->
+  function load-api-callback
     if --api-to-load is 0
+      # export apis for every component
       export bigquery-api = gapi.client.bigquery
       export google-plus-api = gapi.client.plus
 
-      do
-        <-! signin-with-gapi true
-        do
-          {image} <-! load-gplus-profile
-          $ "\#profile_pic_img" .attr \src, image.url.replace /sz=50/, "sz=250" if image
-
+      # unlock the homepage
       unlock-signin-btn!
       $ \.loading_page .hide!
 
-  gapi.client.load \oauth2 \v2 load-callback
-  gapi.client.load \plus \v1 load-callback
-  gapi.client.load \bigquery \v2 load-callback
+      # show the gplus profile picture
+      do
+        <-! signin-with-gapi true
+        {image} <-! load-gplus-profile
+        $ "\#profile_pic_img" .attr \src, (image.url.replace /sz=50/, "sz=250") if image
 
 signin-with-gapi = (immediate, callback) !->
   gapi.auth.authorize do
@@ -186,25 +190,20 @@ signin-with-gapi = (immediate, callback) !->
     callback
 
 login-action = !->
-  do
-    {display-name} <- load-gplus-profile
-    $ "\#g_username" .html display-name
+  {display-name} <- load-gplus-profile
+  $ "\#g_username" .html display-name
+  $ "\#signin_status" .removeClass 'hide'
+  $ "\#menu-bar" .removeClass 'hide'
+  $ "\#signout_status" .removeClass 'hide'
 
-    $ "\#signin_status" .removeClass 'hide'
-    $ "\#menu-bar" .removeClass 'hide'
-    $ "\#signout_status" .removeClass 'hide'
-
-    # initialize all views
-    bigdata-views.map (it) ->
-      it!
-    switch-page \page-data
+  # initialize all views
+  bigdata-views.map ->
+    it!
+  switch-page \page-data
 
 sign-in = !->
-  do
-    <-! signin-with-gapi false
-    login-action!
+  <-! signin-with-gapi false
+  login-action!
 
 sign-out = !->
   document.location.reload!
-
-bigdata-views = [ init-data-view, init-map-view ]

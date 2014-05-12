@@ -7,15 +7,13 @@ unlockSigninBtn = function(){
 };
 out$.switchPage = switchPage;
 function switchPage(pageName){
-  var inOptions, pageClassName;
+  var inOptions;
   inOptions = {
     queue: true,
     duration: 500
   };
-  pageClassName = "." + pageName;
-  console.log(pageClassName);
-  $('.page').addClass('hide');
-  $(pageClassName).fadeIn(inOptions).removeClass('hide');
+  $(".page").addClass('hide');
+  $("." + pageName).fadeIn(inOptions).removeClass('hide');
   if (pageName === 'page-data') {
     updateDataView();
   }
